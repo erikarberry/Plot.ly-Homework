@@ -1,30 +1,35 @@
 function getData(sample) {
     // read the json file to get data
-    d3.json("data/samples.json").then((data)=> {
+    d3.json("samples.json").then((data)=> {
+        console.log(data)
         var metadata = data.metadata;
         console.log(metadata)
-
-    var data = metadata.filter(meta => meta.id.toString() === id)[0];
-    var sampleData = d3.select("#sample-metadata");
-    sampleData.html("");
+        // var data = metadata.filter(meta => meta.id.toString() === id) [0];
+        var sampleData = d3.select("#sample-metadata");
+        sampleData.html("");
     // grab the necessary data per id and append the info into the panel
     Object.entries(data).forEach(function([key, value]) {   
-        var row = sampleData.append("p");
-        row.text(`{key}:${value}`);
-        // var row = sampleData.append("tr");
-        // var cell = row.append("td"); 
-        // cell.text(`{key}:${value}`);
+            // var row = sampleData.append("p");
+            // row.text(`{key}:${value}`);
+        var row = sampleData.append("tr");
+        var cell = row.append("td"); 
+        cell.text(`{key}:${value}`);
         });
     });
 }
 
 // Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
 function getPlot(sample) {
-    // read the json file to get data
-    d3.json("data/samples.json").then((data)=> {
-        var metadata = data.metadata;
-        console.log(metadata)
+    // read the json file to get data']
+    d3.json("samples.json").then((data)=> {
+        console.log(data)
         // filter by id 
+            // function filterID(otu_id) {
+            //     return slice(otu_id.otu_ids) [0];
+            // }
+            // var samples = toptensamples.filter(filterID);
+            // console.log(samples);
+
         var toptensamples = data.sample_values.slice(0,10);
         console.log(toptensamples);
         var otu_id = data.otu_ids.slice(0,10);
@@ -33,12 +38,6 @@ function getPlot(sample) {
         console.log(otu_labels);
   
         var barChart = {
-            x: samplevalues,
-            y: otu_id,
-            text: otu_labels,
-            // marker: {
-            //   color: 'rgb(142,124,195)'},
-            type:"bar",
             orientation: "h",
         };
   
@@ -60,7 +59,7 @@ function getPlot(sample) {
         var BubbleChart = {
             x: otu_id,
             y: toptensamples,
-            mode: "markers",
+            mode: 'markers',
             text: otu_labels,
             marker: {
                 size: toptensamples,
@@ -86,9 +85,10 @@ function init() {
     // select dropdown menu 
     var selector = d3.select("#selDataset");
     // read the json file to get data
-    d3.json("data/samples.json").then((sampleNames)=> {
+    d3.json("samples.json").then((sampleNames)=> {
+        var sampleNames = sampleNames.names;
         sampleNames.forEach((data) => {
-            selector.append("option").text(data).property("value",data);
+            selector.append("option").text(data).property("value", data);
         });
         const first = sampleNames[0];
         getData(first);

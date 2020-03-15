@@ -1,17 +1,13 @@
 function getData(sample) {
     // read the json file to get data
-    // d3.json("data/samples.json").then((data)=> {
-    //     var metadata = data.metadata;
-    //     console.log(metadata)
-    // read the json file to get data
     var metaData = `/metadata/${samples}`;
     d3.json(metaData).then(function(data) {
-        var sampleData = d3.select("#sample-metadata")
+        var sample_metadata = d3.select("#sample-metadata")
         console.log(data);
-        sampleData.html("");
+        sample_metadata.html("");
         // grab the necessary data per id and append the info into the panel
         Object.entries(data).forEach(function([key, value]) {   
-            var row = sampleData.append("p");
+            var row = sample_metadata.append("p");
             row.text(`{key}:${value}`);
             // var row = sampleData.append("tr");
             // var cell = row.append("td"); 
