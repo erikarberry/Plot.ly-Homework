@@ -10,7 +10,7 @@ function getData(sample) {
         demographic.html("");
         // grab the necessary data per id and append the info into the panel
         Object.entries(response).forEach(([key, value]) => {
-            demographic.append("h3").text(`${key.toUpperCase()}:${value}`);
+            demographic.append("h6").text(`${key.toUpperCase()}:${value}`);
         });
     });
 }
