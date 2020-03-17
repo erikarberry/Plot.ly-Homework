@@ -9,11 +9,8 @@ function getData(sample) {
         var demographic = d3.select("#sample-metadata");
         demographic.html("");
         // grab the necessary data per id and append the info into the panel
-        Object.entries(results).forEach(([key, value]) => {
-            demographic.append("h5").text(`${key}:${value}`);
-// Object.entries(sample).forEach(function([key, value]) {   
-//     var row = sampleData.append("p");
-//     row.text(`{key}:${value}`);
+        Object.entries(response).forEach(([key, value]) => {
+            demographic.append("h3").text(`${key.toUpperCase()}:${value}`);
         });
     });
 }
@@ -25,32 +22,18 @@ function getPlot(sample) {
         var samples = response.samples;
         var keyarray = samples.filter(sampleObj => sampleObj.id == sample);
         var response = keyarray[0];
-        var tenSam = response.sample_values;
-        var tenID = response.otu_ids;
-        var tenLabels = response.otu_labels;
+        var sample_values = response.sample_values;
+        var otu_ids = response.otu_ids;
+        var otu_labels = response.otu_labels;
 
-// var sample_values = sample.sample_values;
-// var toptensamples = sample.sample_values.slice(0,10);
-// console.log(toptensamples);
-// var otu_id = sample.otu_ids.slice(0,10);
-// console.log(otu_id);
-// var otu_labels = sample.otu_labels.slice(0,10);
-// console.log(otu_labels);
-        var ticks = tenID.slice(0,10).map(otuID => `OTU ${otuID}`).reverse();
+        var ticks = otu_ids.slice(0,10).map(otuID => `OTU ${otuID}`).reverse();
         var barChart = [{
             y: ticks,
-            x: tenSam.slice(0,10).reverse(),
-            text: tenLabels.slice(0,10).reverse(),
+            x: sample_values.slice(0,10).reverse(),
+            text: otu_labels.slice(0,10).reverse(),
             type: "bar",
             orientation: "h",
-// x: sample_values,
-// y: otu_id,
-// text: otu_labels,
-// type: "bar",
-// orientation: "h"
         }];
-    
-// var data1 = [barChart];
     
         var layoutBar = {
             title: "Top 10 OTU",
@@ -62,37 +45,30 @@ function getPlot(sample) {
         Plotly.newPlot("bar", barChart, layoutBar);
         
         // Create a bubble chart that displays each sample
-        var BubbleChart = [{
-            x: tenID,
-            y: tenLabels,
+        var bubbleChart = [{
+            x: otu_ids,
+            y: sample_values,
             mode: 'markers',
-            text: tenLabels,
+            text: otu_labels,
             marker:{
-                size:  tenSam,
-                color: tenID,
-// x: otu_id,
-// y: sample_values,
-// mode: 'markers',
-// text: otu_labels,
-// marker: {
-//     size: sample_values,
-//     color: otu_id
+                size: sample_values,
+                color: otu_ids,
             }
         }];
-// var data2 = [BubbleChart];
+
         var layoutBubble = {
             title: "Top Ten OTUs per Sample",
             margin: {t:0},
-// height: 600,
-// width: 1000,
             hovermode: "closest",
             xaxis:{title: "OTU ID"},
+            height: 600,
+            width: 1000,
             margin: {t:30},
         };
         // Draw plot
         Plotly.newPlot("bubble", bubbleChart, layoutBubble); 
-    // });
-});  
+    });  
+}
 
 // create the function for the initial data rendering
 function init() {
@@ -104,22 +80,21 @@ function init() {
         sampleNames.forEach((sample) => {
             selector.append("option").text(sample).property("value", sample);
         });
-    });
+
         // var samples = data.samples;
         // sampleNames.forEach((name,idx) => {
             // selector.append("option").text(name).property("value", samples[idx]);
 
-    const first = samples[0];
-    getData(first);
-    getPlot(first);
-    };
-}
+        const first = sampleNames[0];
+        getData(first);
+        getPlot(first);
+    });
+};
 
 // create the function for the change event
 function optionChanged(nextSample) {
     getData(nextSample);
     getPlot(nextSample);
 }
-
 // Initialize the dashboard
 init();
